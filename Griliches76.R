@@ -191,3 +191,34 @@ summary(ToSLS_02,diagnostics = TRUE)
 summary(ToSLS_03,diagnostics = TRUE)
 
 # Na primeira especificao passa, porem na segunda nao.
+
+gaze.coeft = function(x, col="Std. Error"){
+    stopifnot(is.list(x))
+    out = lapply(x, function(y){
+        y[ , col]
+    })
+    return(out)
+}
+gaze.coeft(list(rob.ToSLS002, rob.ToSLS003))
+gaze.coeft(list(rob.ToSLS002, rob.ToSLS003), col=2)
+
+
+gaze.lines.ivreg.diagn = function(x, col="p-value", row=1:3, digits=2){
+    stopifnot(is.list(x))
+    out = lapply(x, function(y){
+        stopifnot(class(y)=="summary.ivreg")
+        y$diagnostics[row, col, drop=FALSE]
+    })
+    out = as.list(data.frame(t(as.data.frame(out)), check.names = FALSE))
+    for(i in 1:length(out)){
+        out[[i]] = c(names(out)[i], round(out[[i]], digits=digits))
+    }
+    return(out)
+}
+gaze.lines.ivreg.diagn(list(summ.ToSLS002, summ.ToSLS003), row=1:2)
+gaze.lines.ivreg.diagn(list(summ.ToSLS002, summ.ToSLS003), col=4, row=1:2, digits=4)
+
+
+stargazer(ToSLS002, ToSLS003, type = "text", 
+          se = gaze.coeft(list(rob.ToSLS002, rob.ToSLS003)), 
+          add.lines = gaze.lines.ivreg.diagn(list(summ.ToSLS002, summ.ToSLS003), row=1:2))
