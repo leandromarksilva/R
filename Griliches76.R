@@ -165,7 +165,7 @@ summary(reg4)
 
 # 5
 # MRT exclude
-ToSLS_02 = ivreg(LW ~ S + IQ + EXPR + TENURE +RNS + SMSA
+ToSLS002 = ivreg(LW ~ S + IQ + EXPR + TENURE +RNS + SMSA
               +year_66+year_67+year_68+year_69
               +year_70+year_71+year_73|
                 S + EXPR + TENURE + RNS + SMSA 
@@ -176,7 +176,7 @@ summary(ToSLS_02)
 
 
 # AGE exclude
-ToSLS_03 = ivreg(LW ~ S + IQ + EXPR + TENURE +RNS + SMSA
+ToSLS003 = ivreg(LW ~ S + IQ + EXPR + TENURE +RNS + SMSA
                  +year_66+year_67+year_68+year_69
                  +year_70+year_71+year_73|
                    S + EXPR + TENURE + RNS + SMSA 
@@ -187,8 +187,8 @@ summary(ToSLS_03)
 
 
 
-summary(ToSLS_02,diagnostics = TRUE)
-summary(ToSLS_03,diagnostics = TRUE)
+summary(ToSLS002,diagnostics = TRUE)
+summary(ToSLS003,diagnostics = TRUE)
 
 # Na primeira especificao passa, porem na segunda nao.
 
