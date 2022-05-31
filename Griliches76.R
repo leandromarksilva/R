@@ -3,8 +3,6 @@
 #packages
 library(tidyverse)
 library(AER)
-library(car)
-library(carData)
 library(stargazer)
 library(knitr)
 library(estimatr)
@@ -15,7 +13,7 @@ knitr::opts_chunk$set(cache = TRUE)
 
 ## Leitura diretamente do Excel
 
-dados_GRILC = openxlsx::read.xlsx("C:/Users/Doutorado/2022-1/Econometria I  2022-1/grilic.xlsx")
+dados_GRILC = openxlsx::read.xlsx("C:/2022-1/Econometria I  2022-1/grilic.xlsx")
 str(dados_GRILC)
 
 options(scipen=4)
@@ -59,15 +57,22 @@ df_regress <- data.frame(RNS = dados_GRILC$RNS, RNS80 = dados_GRILC$RNS80,
 
 # 1st stage
 
-stage_01 = lm(LW~S+EXPR+TENURE+IQ, data=dados_GRILC)
-summary(ols)
+stage_01 = lm(S ~ IQ + EXPR + TENURE + MED + KWW + MRT + AGE
+              ,data=df_regress)
+summary(stage_01)
 
+df_regress$x_hat = fitted.values(stage_01)
 
 # 2st stage
-stage_02 = lm(LW ~ fitted(stage_01) +RNS + SMSA 
-              + AGE + MRT, data = dados_GRILC)
+stage_02 = lm(LW ~ x_hat + S + EXPR + TENURE +RNS + SMSA +MED+KWW
+              +year_66+year_67+year_68+year_69
+              +year_70+year_71
+              ,data = df_regress)
 summary(stage_02)  
 
+
+summary(stage_01, robust = TRUE)
+summary(stage_02, robust = TRUE)
 
 
 stargazer(stage_01, stage_02, type = "text")
@@ -100,18 +105,19 @@ summary(ToSLS)
 
 #E se eu retirar o intercepto?
 
-ToSLS = ivreg(LW ~ S + IQ + EXPR + TENURE +RNS + SMSA
+To2SLS = ivreg(LW ~ S + IQ + EXPR + TENURE +RNS + SMSA
               +year_66+year_67+year_68+year_69
-              +year_70+year_71+year_73 +0|
+              +year_70+year_71+ year_73 +0|
                   S + EXPR + TENURE + RNS + SMSA 
               +year_66 + year_67 + year_68 + year_69
               +year_70 + year_71
               + MED +KWW + MRT + AGE, data = df_regress)
-summary(ToSLS)
+summary(To2SLS)
 
 
 
-stargazer(ToSLS, type = "text", out = "IVregress.txt")
+stargazer(ToSLS, type = "text",header=FALSE,no.space=TRUE,
+          title="2SLS",omit.table.layout="nl" , out = "2SLSregress.txt")
 
 
 
@@ -120,9 +126,9 @@ stargazer(ToSLS, type = "text", out = "IVregress.txt")
 summary(ToSLS,diagnostics = TRUE)
 #summary(to_SLS,diagnostics = TRUE)
 
-#Ou seja, temos a estistica de 87.655 sobre 745 graus de liberdade. O p-Valor
-# zero o que n?o fornece provas suficientes contra a hip?tese nula.
-#Portanto, o teste Sargan sugere que as vari?veis do instrumento n?o 
+#Ou seja, temos a estatistica de 87.655 sobre 745 graus de liberdade. O p-Valor
+# zero o que n?o fornece provas suficientes contra a hipotese nula.
+#Portanto, o teste Sargan sugere que as variaveis do instrumento nao 
 #estão relacionadas aos residuos.
 
 
