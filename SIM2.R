@@ -5,13 +5,11 @@
 library(openxlsx)
 library(forecast)
 library(tidyverse)
-library(readxl)
-library(xlsx)
 library(ggmatplot)
 library(sarima)
 
 #importar
-dados_SIM2 = openxlsx::read.xlsx("C:/Users/leand/OneDrive/Doutorado/2022-1/Econometria I  2022-1/Listas/Sim2.xlsx")
+dados_SIM2 = openxlsx::read.xlsx("Doutorado/2022-1/Econometria I  2022-1/Listas/Sim2.xlsx")
 
 View(dados_SIM2)
 
