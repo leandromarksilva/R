@@ -1,5 +1,5 @@
-## Trabalho Econometria Series Temporais ###
-##questao 6 
+
+##questao 6####
 
 ##carregar pctes
 library(openxlsx)
