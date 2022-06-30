@@ -61,8 +61,7 @@ stargazer(pp_P, kpss_S, no.space = TRUE, type = "text", style='aer')
 arima(qclog, order = c(0,1,1)) 
 
 
-
-##Cross checking with auto arima##
+##Cross checking com AutoArima##
 #Auto arima 
 auto.arima(qclog) #(0,1,1)
 
