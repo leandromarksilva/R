@@ -1,4 +1,3 @@
-
 ##Bibliotecas utilizadas##
 library(quantmod)
 library(plyr)
@@ -11,7 +10,7 @@ library(forecast)
 require(forecast)
 
 
-##Transferência dos dados do S&P 500 (YahooFinance)##
+##Transferência dos dados do YahooFinance##
 
 getSymbols('QCOM', from='2010-01-01', to='2019-12-31')
 
@@ -61,7 +60,7 @@ stargazer(pp_P, kpss_S, no.space = TRUE, type = "text", style='aer')
 arima(qclog, order = c(0,1,1)) 
 
 
-##Cross checking com AutoArima##
+##Cross checking com auto arima##
 #Auto arima 
 auto.arima(qclog) #(0,1,1)
 
