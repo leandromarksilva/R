@@ -8,9 +8,10 @@ library(timeSeries)
 library(quadprog)
 library(forecast)
 require(forecast)
+library(ggmatplot)
+library(stargazer)
 
-
-##Transferência dos dados do YahooFinance##
+##Transferência dos dados YahooFinance##
 
 getSymbols('QCOM', from='2010-01-01', to='2019-12-31')
 
@@ -26,7 +27,19 @@ qclog
 
 ##Plotting log returns##
 matplot(qclog,type='l', lty=1, col=rgb(0, 0.4, 1, 0.6), 
-        xlab="Percentual de retornos diários do SP-500", ylab = "Retornno Diário (%)")
+        xlab="Percentual de retornos diários da Qualcomm Inc.", ylab = "Retornno Diário (%)")
+
+
+# Volatilidade em função do mês
+matplot(jitter(month(qclog), amount = 1/3), qclog, pch = 20, ylab = "Retorno percentual diário",
+        xlab = "Mês", bty = "l" , col=rgb(0, 0.4, 1, 0.6),)
+
+
+boxplot(as.vector(qclog) ~ factor(wday(qclog), labels = c("Seg", "Ter", "Qua", 
+                                                            "Qui", "Sex")), 
+        xlab = "Dia da Semana", pch = 20, col = rgb(0, 0.8, 1, 0.8), 
+        ylab = "Retorno percentual diário", bty = "l")
+
 
 ##Verificação da estacionaridade ## Unit Root Tests
 ##Augumented Dickey Fuller Test##
@@ -50,10 +63,17 @@ acf.qclog = acf(qclog[c(1:breakpyt),], main='ACF Plot',lag.max = 100)
 pacf.qclog = pacf(qclog[c(1:breakpyt),], main='PACF Plot',lag.max = 100)
 
 ##Não é necessário diferenciar, pois os dados são estacionários##
+# (P)ACF de retornos diários ao quadrado.
+par(mfrow = c(1, 2))
+titulo_qclog = "Retorno diário \najustado no fechamento do dia"
+TSA::acf(I(sprety^2), na.action = na.pass, main = titulo_qclog)
+pacf(I(sprety^2), na.action = na.pass, main = titulo_qclog)
 
 
+#Resumo Stats
 stargazer(ADF, no.space = TRUE, type = "text")
-stargazer(pp_P, kpss_S, no.space = TRUE, type = "text", style='aer')
+stargazer(pp_P, kpss_S, no.space = TRUE, type = "text", style='aer', 
+          out = "unitroots.txt")
 
 
 #ARIMA(1)
@@ -71,12 +91,14 @@ fto = forecast(arima_fit, h=1000)
 par(mfrow = c(1,1))
 plot(fto)
 
-
+##Criterios de Informação adc##
+AIC(arima_fit)
+BIC(arima_fit)
 
 
 ############################################################
 #1- Projetando toda a série de retornos a partir do breakpoint.
-#2- Within this loop we will forecast returns for each data point from the test dataset.
+#2- Dentro deste loop, preveremos retornos para cada ponto de dados a partir do conjunto de dados de teste.
 
 ##Inicialização de um objeto xts para retornos reais de log##
 
@@ -107,7 +129,6 @@ for (b in breakpyt:(nrow(qclog)-1)) {
     ##Plot acf dos residuos##
     acf(fit$residuals,main="Residuos")
 
-    
     
     
     #6- Previsão, o nível de confiança é de 99% , para melhorar o modelo. 
@@ -190,6 +211,8 @@ tsdiag(arima_fit)
 #Previsão dos retornos
 pred = predict(arima_fit, n.ahead = 2)
 pred
+
+stargazer(pred,no.space = TRUE, type = "text")
 
 
 ###End Code###
