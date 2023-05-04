@@ -6,7 +6,7 @@ pacman::p_load(tidyverse, ggplot2,ggthemes, nnet, margins,performance,gtsummary,
                gridExtra,stringi)
 
 # Carregar conjunto de dados
-dados_br = read.csv("C:/Users/leand/PycharmProjects/untitled/dados_brDF.csv")
+dados_br = read.csv(".../dados_brDF.csv")
 
 
 ##--------------------------------------------------------------------------------------------------###
