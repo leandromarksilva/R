@@ -1,5 +1,13 @@
+################################################
+## ECONOMETRIA II - Doutorado                 ##
+## Atividade Empírica I                       ##
+## Aluno: Leandro Marques                     ##
+################################################
 
-# Carregar bibliotecas
+###############################
+## Importing useful packages ##
+###############################
+
 if (!require(pacman)) install.packages("pacman")
 pacman::p_load(tidyverse, ggplot2,ggthemes, nnet, margins,performance,gtsummary,survival,reshape2,DescTools,pROC,
                psych,car,rms,lmtest, AER, mlogit, MNP, sandwich, gmnl, dfidx, Formula, stargazer,kableExtra,
@@ -402,7 +410,7 @@ dados_br_long = dados_br_long %>%
   mutate(choice = as.integer(alternative == escolha),
          choice_id = as.integer(alternative))
 
-#BEM AQUIIIIIIIIIIIIIIII
+#BEM AQUI
 
 # Calcula efeitos marginais para o modelo MNL
 marg_eff_multinom_probit = margins(fitted_probs)
